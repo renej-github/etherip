@@ -1,5 +1,8 @@
 apply plugin: 'java'
 
+jar.baseName = "etherip-rgh"
+version = "1.0.0"
+
 repositories {
     mavenCentral()
 }
