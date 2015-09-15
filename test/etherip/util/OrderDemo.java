@@ -7,24 +7,21 @@
  *******************************************************************************/
 package etherip.util;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
-import etherip.util.Hexdump;
-
-/** JUnit demo of ByteBuffer orderring
- *  @author Kay Kasemir
+/**
+ * JUnit demo of ByteBuffer orderring
+ *
+ * @author Kay Kasemir
  */
-public class OrderDemo
-{
+public class OrderDemo {
     @Test
-    public void testOrder() throws Exception
-    {
+    public void testOrder() throws Exception {
         final ByteBuffer buffer = ByteBuffer.allocate(20);
         buffer.order(ByteOrder.BIG_ENDIAN);
 

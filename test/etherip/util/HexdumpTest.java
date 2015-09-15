@@ -7,22 +7,19 @@
  *******************************************************************************/
 package etherip.util;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 import java.nio.ByteBuffer;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
-import etherip.util.Hexdump;
-
-/** @author Kay Kasemir */
-public class HexdumpTest
-{
+/**
+ * @author Kay Kasemir
+ */
+public class HexdumpTest {
     @Test
-    public void hexTest()
-    {
+    public void hexTest() {
         String string = Hexdump.toCompactHexdump(ByteBuffer.wrap("Hello!\n".getBytes()));
         System.out.println(string);
         assertThat(string, equalTo("0000 - 48 65 6C 6C 6F 21 0A - Hello!."));

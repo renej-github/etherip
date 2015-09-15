@@ -7,49 +7,42 @@
  *******************************************************************************/
 package etherip.protocol;
 
+import etherip.TestSettings;
+import etherip.protocol.Encapsulation.Command;
+import etherip.types.CNService;
+import etherip.util.Hexdump;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.nio.ByteBuffer;
+
 import static etherip.types.CNClassPath.Identity;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.nio.ByteBuffer;
+/**
+ * @author Kay Kasemir
+ */
+public class SendRRDataTest {
+    final private ByteBuffer buf = TestSettings.getBuffer();
 
+    @Before
+    public void setup() {
+        TestSettings.logAll();
+    }
 
-import org.junit.Before;
-import org.junit.Test;
+    @Test
+    public void testSendRRData() {
+        final MessageRouterProtocol pdu = new MessageRouterProtocol(CNService.Get_Attribute_Single, Identity().attr(7), new ProtocolAdapter());
+        final SendRRDataProtocol rr_data = new SendRRDataProtocol(pdu);
+        final Encapsulation encap = new Encapsulation(Command.SendRRData, 0x12027100, rr_data);
+        final StringBuilder log = new StringBuilder();
+        encap.encode(buf, log);
+        System.out.println(log.toString());
 
-import etherip.TestSettings;
-import etherip.protocol.Encapsulation;
-import etherip.protocol.MessageRouterProtocol;
-import etherip.protocol.ProtocolAdapter;
-import etherip.protocol.SendRRDataProtocol;
-import etherip.protocol.Encapsulation.Command;
-import etherip.types.CNService;
-import etherip.util.Hexdump;
-
-/** @author Kay Kasemir */
-public class SendRRDataTest
-{
-	final private ByteBuffer buf = TestSettings.getBuffer();
-
-	@Before
-	public void setup()
-	{
-		TestSettings.logAll();
-	}
-	
-	@Test
-	public void testSendRRData()
-	{
-		final MessageRouterProtocol pdu = new MessageRouterProtocol(CNService.Get_Attribute_Single, Identity().attr(7), new ProtocolAdapter());
-		final SendRRDataProtocol rr_data = new SendRRDataProtocol(pdu);
-		final Encapsulation encap = new Encapsulation(Command.SendRRData, 0x12027100, rr_data);
-		final StringBuilder log = new StringBuilder();
-		encap.encode(buf, log);
-		System.out.println(log.toString());
-		
-		buf.flip();
-		String hex = Hexdump.toHexdump(buf);
-		System.out.println(hex);
-		assertThat(hex, equalTo("0000 - 6F 00 18 00 00 71 02 12 00 00 00 00 46 75 6E 73 - o....q......Funs\n0010 - 74 75 66 66 00 00 00 00 00 00 00 00 00 00 02 00 - tuff............\n0020 - 00 00 00 00 B2 00 08 00 0E 03 20 01 24 01 30 07 - .......... .$.0.\n"));
-	}
+        buf.flip();
+        String hex = Hexdump.toHexdump(buf);
+        System.out.println(hex);
+        assertThat(hex, equalTo("0000 - 6F 00 18 00 00 71 02 12 00 00 00 00 46 75 6E 73 - o....q......Funs\n0010 - 74 75 66 66 00 00 00 00 00 00 00 00 00 00 02 00 - tuff............\n0020 - 00 00 00 00 B2 00 08 00 0E 03 20 01 24 01 30 07 - .......... .$.0.\n"));
+    }
 }

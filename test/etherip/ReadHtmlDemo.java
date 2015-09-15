@@ -7,22 +7,23 @@
  *******************************************************************************/
 package etherip;
 
-import static etherip.util.Hexdump.toHexdump;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import org.junit.Test;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
-import org.junit.Test;
+import static etherip.util.Hexdump.toHexdump;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-/** @author Kay Kasemir */
-public class ReadHtmlDemo
-{
+/**
+ * @author Kay Kasemir
+ */
+public class ReadHtmlDemo {
     public static final int TIMEOUT_MS = 2000;
+
     @Test
-    public void readHtml() throws Exception
-    {
+    public void readHtml() throws Exception {
         final ByteBuffer buffer = ByteBuffer.allocate(1024);
 
         // Fill
@@ -41,8 +42,7 @@ public class ReadHtmlDemo
 
         buffer.clear();
         int read = channel.read(buffer).get(TIMEOUT_MS, MILLISECONDS);
-        while (read > 0)
-        {
+        while (read > 0) {
             System.out.println("READ " + read + " bytes");
             buffer.flip();
             System.out.println(toHexdump(buffer));

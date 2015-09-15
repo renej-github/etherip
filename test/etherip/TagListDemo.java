@@ -7,45 +7,42 @@
  *******************************************************************************/
 package etherip;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import etherip.protocol.Connection;
+import etherip.protocol.RegisterSession;
 import org.junit.Before;
 import org.junit.Test;
 
-import etherip.protocol.Connection;
-import etherip.protocol.RegisterSession;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/** @author Kay Kasemir */
-public class TagListDemo
-{
-	@Before
-	public void setup()
-	{		
-		TestSettings.logAll();
-	}
+/**
+ * @author Kay Kasemir
+ */
+public class TagListDemo {
+    @Before
+    public void setup() {
+        TestSettings.logAll();
+    }
 
-	@Test
-	public void testTagList() throws Exception
-	{
-	    Logger.getLogger("").setLevel(Level.FINE);
-	    try
-	    (
-            final Connection connection = new Connection(TestSettings.get("plc"), TestSettings.getInt("slot"));
-        )
-		{
+    @Test
+    public void testTagList() throws Exception {
+        Logger.getLogger("").setLevel(Level.FINE);
+        try
+                (
+                        final Connection connection = new Connection(TestSettings.get("plc"), TestSettings.getInt("slot"));
+                ) {
             final RegisterSession register = new RegisterSession();
             connection.execute(register);
             connection.setSession(register.getSession());
-            
-		    final TagList tags = new TagList();
-		    // Initial read
-		    tags.add(TestSettings.get("tag1"));
-		    tags.add(TestSettings.get("tag2"));
-		    tags.process(connection);
-		    
-		    // Write a tag
-		    tags.get(TestSettings.get("tag2")).setWriteValue(0, 17);
+
+            final TagList tags = new TagList();
+            // Initial read
+            tags.add(TestSettings.get("tag1"));
+            tags.add(TestSettings.get("tag2"));
+            tags.process(connection);
+
+            // Write a tag
+            tags.get(TestSettings.get("tag2")).setWriteValue(0, 17);
             tags.process(connection);
 
             // Read
@@ -57,6 +54,6 @@ public class TagListDemo
 
             // Read
             tags.process(connection);
-		}
-	}
+        }
+    }
 }

@@ -7,33 +7,30 @@
  *******************************************************************************/
 package etherip.protocol;
 
-import java.nio.ByteBuffer;
-
 import etherip.types.CIPData;
 import etherip.types.CNService;
 
-/** Protocol body for {@link CNService#CIP_WriteData}
+import java.nio.ByteBuffer;
+
+/**
+ * Protocol body for {@link CNService#CIP_WriteData}
  *
- *  @author Kay Kasemir
+ * @author Kay Kasemir
  */
-public class CIPWriteDataProtocol extends ProtocolAdapter
-{
+public class CIPWriteDataProtocol extends ProtocolAdapter {
     final private CIPData data;
-    
-    public CIPWriteDataProtocol(final CIPData data)
-    {
+
+    public CIPWriteDataProtocol(final CIPData data) {
         this.data = data;
     }
 
     @Override
-    public int getRequestSize()
-    {
+    public int getRequestSize() {
         return data.getEncodedSize();
     }
 
     @Override
-    public void encode(final ByteBuffer buf, final StringBuilder log)
-    {
+    public void encode(final ByteBuffer buf, final StringBuilder log) {
         data.encode(buf);
         if (log != null)
             log.append("USINT type, data        : ").append(data).append("\n");

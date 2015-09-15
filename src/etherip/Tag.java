@@ -7,30 +7,38 @@
  *******************************************************************************/
 package etherip;
 
+import etherip.types.CIPData;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import etherip.types.CIPData;
-
-/** Tag on the PLC
- * 
- *  <p>Initially, the data for the tag is read to get the original value
- *  and determine the data type.
- *  From then on, tag can be written.
- *  @author Kay Kasemir
+/**
+ * Tag on the PLC
+ * <p>
+ * <p>Initially, the data for the tag is read to get the original value
+ * and determine the data type.
+ * From then on, tag can be written.
+ *
+ * @author Kay Kasemir
  */
-public class Tag
-{
-    public enum State
-    {
-        /** Tag is meant to be read, updating value with latest from device */
+public class Tag {
+    public enum State {
+        /**
+         * Tag is meant to be read, updating value with latest from device
+         */
         READING,
-        /** Tag has value meant to be written to the device */
+        /**
+         * Tag has value meant to be written to the device
+         */
         TO_BE_WRITTEN,
-        /** Value of tag is being written to device right now */
+        /**
+         * Value of tag is being written to device right now
+         */
         WRITING
-    };
-    
+    }
+
+    ;
+
     // SYNC Notes:
     //
     // Tag is accessed by TagList which processes the read/write traffic.
@@ -82,88 +90,101 @@ public class Tag
     // TagList finishes writing the first value (A or B)
     // TagList starts writing the value B
     // TagList finishes writing the value B
-    
-    /** Tag name */
-    final private String name;
-    
-    /** Current value, or the value to be written */
-    private CIPData data = null;
-    
-    /** State */
-    private State state = State.READING;
-    
-    /** Listeners */
-    final private List<TagListener> listeners = new CopyOnWriteArrayList<>();
-    
-    /** Initialize
-     *  @param name Tag name
+
+    /**
+     * Tag name
      */
-    public Tag(final String name)
-    {
+    final private String name;
+
+    /**
+     * Current value, or the value to be written
+     */
+    private CIPData data = null;
+
+    /**
+     * State
+     */
+    private State state = State.READING;
+
+    /**
+     * Listeners
+     */
+    final private List<TagListener> listeners = new CopyOnWriteArrayList<>();
+
+    /**
+     * Initialize
+     *
+     * @param name Tag name
+     */
+    public Tag(final String name) {
         this.name = name;
     }
-    
-    /** @return Tag name */
-    public String getName()
-    {
+
+    /**
+     * @return Tag name
+     */
+    public String getName() {
         return name;
     }
-    
-    /** @param listener Listener to add */
-    public void addListener(final TagListener listener)
-    {
+
+    /**
+     * @param listener Listener to add
+     */
+    public void addListener(final TagListener listener) {
         listeners.add(listener);
         // Perform initial update if there's already known value
-        synchronized (this)
-        {
+        synchronized (this) {
             if (data != null)
                 listener.tagUpdate(this);
         }
     }
 
-    /** @param listener Listener to remove
-     *  @throws IllegalStateException if listener is not known
+    /**
+     * @param listener Listener to remove
+     * @throws IllegalStateException if listener is not known
      */
-    public void removeListener(final TagListener listener)
-    {
-        if (! listeners.remove(listener))
+    public void removeListener(final TagListener listener) {
+        if (!listeners.remove(listener))
             throw new IllegalStateException("Unknown listener");
     }
-    
-    /** @return Tag state */
-    public synchronized State getState()
-    {
+
+    /**
+     * @return Tag state
+     */
+    public synchronized State getState() {
         return state;
     }
-    
-    /** Update state tag
-     *  <p>To be called by {@link TagList}
-     *  @param state {@link State}
+
+    /**
+     * Update state tag
+     * <p>To be called by {@link TagList}
+     *
+     * @param state {@link State}
      */
-    synchronized void setState(final State state)
-    {
+    synchronized void setState(final State state) {
         this.state = state;
     }
 
-    /** Get current value of the tag.
-     *  <p>This is either the most recent value read from the device,
-     *  or the value that is about to be written to the device.
-     *  @return {@link CIPData}
+    /**
+     * Get current value of the tag.
+     * <p>This is either the most recent value read from the device,
+     * or the value that is about to be written to the device.
+     *
+     * @return {@link CIPData}
      */
-    synchronized public CIPData getValue()
-    {
+    synchronized public CIPData getValue() {
         return data;
     }
 
-    /** Update value of the tag with data read from device
-     *  <p>To be called by {@link TagList}
-     *  @param data {@link CIPData}
+    /**
+     * Update value of the tag with data read from device
+     * <p>To be called by {@link TagList}
+     *
+     * @param data {@link CIPData}
      */
-    synchronized void setValue(final CIPData data)
-    {
+    synchronized void setValue(final CIPData data) {
         this.data = data;
-        for (TagListener listener : listeners)
-        {
+        for (TagListener listener : listeners) {
             if (data == null)
                 listener.tagError(this);
             else
@@ -171,16 +192,17 @@ public class Tag
         }
     }
 
-    /** Set CIP data to be written to the device
-     *  @param index Element index 0, 1, ...
-     *  @param value Numeric value to write to that element
-     *  @throws IndexOutOfBoundsException if index is invalid
-     *  @throws IllegalStateException if tag has never been read, so data type is unknown
-     *  @throws Exception on invalid data type
-     *  @throws IndexOutOfBoundsException if index is invalid
+    /**
+     * Set CIP data to be written to the device
+     *
+     * @param index Element index 0, 1, ...
+     * @param value Numeric value to write to that element
+     * @throws IndexOutOfBoundsException if index is invalid
+     * @throws IllegalStateException     if tag has never been read, so data type is unknown
+     * @throws Exception                 on invalid data type
+     * @throws IndexOutOfBoundsException if index is invalid
      */
-    synchronized public void setWriteValue(final int index, final Number value) throws IllegalStateException, Exception, IndexOutOfBoundsException
-    {
+    synchronized public void setWriteValue(final int index, final Number value) throws IllegalStateException, Exception, IndexOutOfBoundsException {
         if (data == null)
             throw new IllegalStateException("Cannot write tag " + name + " because data type is unknown");
         data.set(index, value);
@@ -188,8 +210,7 @@ public class Tag
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append("Tag '").append(name).append("'");
         if (data == null)

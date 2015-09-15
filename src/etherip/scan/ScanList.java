@@ -7,57 +7,51 @@
  *******************************************************************************/
 package etherip.scan;
 
-import static etherip.EtherNetIP.logger;
-
-import java.util.TimerTask;
-import java.util.logging.Level;
-
 import etherip.Tag;
 import etherip.TagList;
 import etherip.protocol.Connection;
 
-/** List of tags that are processed (read or written)
- *  @author Kay Kasemir
+import java.util.TimerTask;
+import java.util.logging.Level;
+
+import static etherip.EtherNetIP.logger;
+
+/**
+ * List of tags that are processed (read or written)
+ *
+ * @author Kay Kasemir
  */
-class ScanList extends TimerTask
-{
+class ScanList extends TimerTask {
     final private double period;
     final private Connection connection;
-    
+
     final private TagList tags = new TagList();
-   
+
     private volatile boolean aborted = false;
-    
-    public ScanList(final double period, final Connection connection)
-    {
+
+    public ScanList(final double period, final Connection connection) {
         this.period = period;
         this.connection = connection;
     }
 
-    public Tag add(final String tag_name)
-    {
+    public Tag add(final String tag_name) {
         return tags.add(tag_name);
     }
-    
+
     @Override
-    public void run()
-    {
+    public void run() {
         logger.log(Level.FINE, "Scan list {0} sec", period);
-        try
-        {
+        try {
             tags.process(connection);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             if (aborted)
                 return;
             logger.log(Level.WARNING, "Scan list " + period + " sec process failed", ex);
         }
     }
-    
+
     @Override
-    public boolean cancel()
-    {
+    public boolean cancel() {
         aborted = true;
         return super.cancel();
     }

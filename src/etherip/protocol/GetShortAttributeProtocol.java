@@ -9,25 +9,28 @@ package etherip.protocol;
 
 import java.nio.ByteBuffer;
 
-/** Decode a <code>short</code> attribute
- *  @author Kay Kasemir
+/**
+ * Decode a <code>short</code> attribute
+ *
+ * @author Kay Kasemir
  */
-public class GetShortAttributeProtocol extends ProtocolAdapter
-{
-	private short value;
+public class GetShortAttributeProtocol extends ProtocolAdapter {
+    private short value;
 
-	/** {@inheritDoc} */
-	@Override
-	public void decode(final ByteBuffer buf, final int available, final StringBuilder log) throws Exception
-	{
-		value = buf.getShort();
-		if (log != null)
-			log.append("UINT value      : ").append(value).append("\n");
-	}
-	
-	/** @return Value read from response */
-	final public short getValue()
-	{
-		return value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void decode(final ByteBuffer buf, final int available, final StringBuilder log) throws Exception {
+        value = buf.getShort();
+        if (log != null)
+            log.append("UINT value      : ").append(value).append("\n");
+    }
+
+    /**
+     * @return Value read from response
+     */
+    final public short getValue() {
+        return value;
+    }
 }

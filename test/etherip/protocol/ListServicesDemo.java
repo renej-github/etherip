@@ -7,41 +7,37 @@
  *******************************************************************************/
 package etherip.protocol;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
 import etherip.TestSettings;
 import etherip.protocol.ListServicesProtocol.Service;
+import org.junit.Test;
 
-/** JUnit demo of {@link ListServices}
- *  @author Kay Kasemir
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+
+/**
+ * JUnit demo of {@link ListServices}
+ *
+ * @author Kay Kasemir
  */
-public class ListServicesDemo
-{
+public class ListServicesDemo {
     @Test
-    public void testListServices() throws Exception
-    {
-    	TestSettings.logAll();
-    	
-    	try
-    	(
-			Connection connection = new Connection(TestSettings.get("plc"), TestSettings.getInt("slot"));
-		)
-		{
-    		final ListServices list_services = new ListServices();
-    		connection.execute(list_services);
-    		
-    		final Service[] services = list_services.getServices();
-			assertThat(services, not(nullValue()));
-			
-			// In principle, multiple services could be supported.
-			// So far have only seen this one
-			assertThat(services.length, equalTo(1));
-			assertThat(services[0].getName(), equalTo("Communications.."));
-		}
+    public void testListServices() throws Exception {
+        TestSettings.logAll();
+
+        try
+                (
+                        Connection connection = new Connection(TestSettings.get("plc"), TestSettings.getInt("slot"));
+                ) {
+            final ListServices list_services = new ListServices();
+            connection.execute(list_services);
+
+            final Service[] services = list_services.getServices();
+            assertThat(services, not(nullValue()));
+
+            // In principle, multiple services could be supported.
+            // So far have only seen this one
+            assertThat(services.length, equalTo(1));
+            assertThat(services[0].getName(), equalTo("Communications.."));
+        }
     }
 }

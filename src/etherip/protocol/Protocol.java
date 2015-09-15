@@ -7,10 +7,10 @@
  *******************************************************************************/
 package etherip.protocol;
 
-/** Base for protocol handler
+/**
+ * Base for protocol handler
  *
- *  @author Kay Kasemir
+ * @author Kay Kasemir
  */
-public interface Protocol extends ProtocolEncoder, ProtocolDecoder
-{
+public interface Protocol extends ProtocolEncoder, ProtocolDecoder {
 }

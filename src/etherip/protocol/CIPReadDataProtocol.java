@@ -7,40 +7,46 @@
  *******************************************************************************/
 package etherip.protocol;
 
-import java.nio.ByteBuffer;
-
 import etherip.types.CIPData;
 import etherip.types.CNService;
 
-/** Protocol body for {@link CNService#CIP_ReadData}
+import java.nio.ByteBuffer;
+
+/**
+ * Protocol body for {@link CNService#CIP_ReadData}
  *
- *  @author Kay Kasemir
+ * @author Kay Kasemir
  */
-public class CIPReadDataProtocol extends ProtocolAdapter
-{
+public class CIPReadDataProtocol extends ProtocolAdapter {
     private CIPData data;
-    
+    private final int numElements;
+
+    public CIPReadDataProtocol(int numElements) {
+        this.numElements = numElements;
+    }
+
+    public CIPReadDataProtocol() {
+        this(1);
+    }
+
     @Override
-    public int getRequestSize()
-    {
+    public int getRequestSize() {
         return 2;
     }
 
     @Override
-    public void encode(final ByteBuffer buf, final StringBuilder log)
-    {
-        buf.putShort((short) 1); // elements
+    public void encode(final ByteBuffer buf, final StringBuilder log) {
+        buf.putShort((short) numElements); // elements
         if (log != null)
-            log.append("USINT elements          : 1\n");
+            log.append("USINT elements          : ").append(numElements).append("\n");
     }
 
     @Override
-    public void decode(final ByteBuffer buf, final int available, final StringBuilder log) throws Exception
-    {
-        if (available <= 0)
-        {
+    public void decode(final ByteBuffer buf, final int available, final StringBuilder log) throws Exception {
+        if (available <= 0) {
             data = null;
-            log.append("USINT type, data        : - nothing-\n");
+            if (log != null)
+                log.append("USINT type, data        : - nothing-\n");
             return;
         }
         final CIPData.Type type = CIPData.Type.forCode(buf.getShort());
@@ -50,9 +56,8 @@ public class CIPReadDataProtocol extends ProtocolAdapter
         if (log != null)
             log.append("USINT type, data        : ").append(data).append("\n");
     }
-    
-    final public CIPData getData()
-    {
+
+    final public CIPData getData() {
         return data;
     }
 }
