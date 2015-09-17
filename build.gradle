@@ -1,7 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'osgi'
 
 jar.baseName = "etherip-rgh"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -26,3 +27,18 @@ sourceSets {
    }
 }
 
+jar {
+   manifest {
+      attributes(
+         'Bundle-SymbolicName': "etherip",
+         'Bundle-Copyright': "Copyright (c) 2012 Oak Ridge National Laboratory",
+         'Bundle-Description': "EthernetIP Allen Bradley Control Logix/Compact Logix library",
+         'Bundle-DocURL': "https://github.com/renej-github/etherip",
+         'Bundle-License': "http://www.eclipse.org/legal/epl-v10.html",
+         'Bundle-Vendor': "Oak Ridge National Laboratory (modified rgh)"
+      )
+
+      instruction 'Import-Package', '*'
+      instruction 'Export-Package', '*'
+   }
+}
