@@ -12,6 +12,7 @@ import etherip.protocol.ListServicesProtocol.Service;
 import etherip.types.CIPData;
 import etherip.types.CNService;
 
+import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +28,11 @@ import static etherip.types.CNService.Get_Attribute_Single;
  * @author Kay Kasemir
  */
 public class EtherNetIP implements AutoCloseable {
-    final public static String version = "1.0.0";
+    final public static String version = "1.0.1";
 
     final public static Logger logger = Logger.getLogger(EtherNetIP.class.getName());
 
-    final private String address;
+    final private InetSocketAddress address;
     final private int slot;
     private Connection connection = null;
 
@@ -43,6 +44,11 @@ public class EtherNetIP implements AutoCloseable {
      * @param address IP address of device
      */
     public EtherNetIP(final String address, final int slot) {
+        this.address = new InetSocketAddress(address, 0xAF12);
+        this.slot = slot;
+    }
+
+    public EtherNetIP(final InetSocketAddress address, final int slot) {
         this.address = address;
         this.slot = slot;
     }
